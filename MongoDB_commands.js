@@ -75,22 +75,46 @@ db.posts.insert({username: "GoodGuyGreg", title: "Steals your identity", body: "
 db.posts.insert({username: "GoodGuyGreg", title: "Reports a bug in your code", body: "Sends you a Pull Request"})
 // 8.
 db.posts.insert({username: "ScumbagSteve", title: "Borrows something", body: "Sells it"})
+// 9.
+db.posts.insert({username: "ScumbagSteve", title: "Borrows everything", body: "The end"}) 
+// 10.
+db.posts.insert({username: "ScumbagSteve", title: "Forks your repo on github", body: "Sets to private"}) 
+// 11.
+db.posts.find({title: "Borrows something"})
+// get the object id
+db.comments.insert({username: "GoodGuyGreg", comment: "Hope you got a good deal!", post: [ObjectId("5db5ee56c059d040926e09fa")]})
+// 12.
+db.posts.find({title : "Borrows everything"})
+// get the object id
+db.comments.insert({username: "GoodGuyGreg", comment: "What's mine is yours!", post: [ObjectId("5db5ee69c059d040926e09fb")]})
+// 13.
+db.posts.find({title : "Forks your repo on github"})
+// get the object id
+db.comments.insert({username: "ScumbagSteve", comment: "It still isn't clean", post: [ObjectId("5db5ee89c059d040926e09fc")]})
 
+db.comments.insert({username: "ScumbagSteve", comment: "It still isn't clean", post: posts.findOne({title: "Reports a bug in your code"})[_id]})
 
+// 14.
+db.posts.find({title : "Reports a bug in your code"})
+// get the object id
+db.comments.insert({username: "ScumbagSteve", comment: "Denied your PR cause I found a hack", post: [ObjectId("5db5ee2bc059d040926e09f9")]})
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Question 8 - Querying Related collections
+// 1.
+db.users.find()
+// 2.
+db.posts.find()
+// 3.
+db.posts.find({username: "GoodGuyGreg"})
+// 4.
+db.posts.find({username: "ScumbagSteve"})
+// 5.
+db.comments.find()
+// 6.
+db.comments.find({username: "GoodGuyGreg"})
+// 7.
+db.comments.find({username: "ScumbagSteve"})
+// 8.
+db.comments.find({post : db.posts.findOne({title: "Reports a bug in your code"})._id})
 
 
