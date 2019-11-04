@@ -1,7 +1,7 @@
 /* Question 2 - Inserted Documents */
-create table movies (movie_id SERIAL PRIMARY KEY, title text NOT NULL, writer varchar(100), year integer);
+create table movies (movie_id SERIAL PRIMARY KEY, title text NOT NULL, writer varchar(100), year int);
 create table actors (actor_id SERIAL PRIMARY KEY, name varchar(100) NOT NULL);
-create table movies_actors (id SERIAL PRIMARY KEY, mov_id integer REFERENCES movies(movie_id), act_id integer REFERENCES actors(actor_id), UNIQUE(mov_id, act_id));
+create table movies_actors (id SERIAL PRIMARY KEY, mov_id int REFERENCES movies(movie_id), act_id int REFERENCES actors(actor_id), UNIQUE(mov_id, act_id));
 
 insert into movies (title, writer, year) VALUES ('Fight Club', 'Chuck Palahniuk', 1999);
 insert into actors (name) VALUES ('Brad Pitt');
@@ -86,34 +86,57 @@ delete from movies where title = 'Avatar';
 
 
 /* Question 7 - Relationships */
-create table full_names (id SERIAL PRIMARY KEY, first_name varchar(50), last_name varchar(50));
-create table users (id SERIAL PRIMARY KEY, username text);
-create table users_full_names (id SERIAL PRIMARY KEY, user_id integer REFERENCES users(id), name_id integer REFERENCES full_names(id), UNIQUE(user_id, name_id));
+-- create table full_names (id SERIAL PRIMARY KEY, first_name varchar(50), last_name varchar(50));
+create table users (id SERIAL PRIMARY KEY, username text, first_name varchar(50), last_name varchar(50));
+-- create table users_full_names (id SERIAL PRIMARY KEY, user_id int REFERENCES users(id), name_id int REFERENCES full_names(id), UNIQUE(user_id, name_id));
 
-insert into users (username) VALUES ('GoodGuyGreg');
-insert into full_names (first_name, last_name) VALUES ('Good Guy', 'Greg');
+insert into users (username, first_name, last_name) VALUES ('GoodGuyGreg', 'Good Guy', 'Greg');
+insert into users (username, first_name, last_name) VALUES ('ScumbagSteve', 'Scumbag', 'Steve');
+
+-- insert into full_names (first_name, last_name) VALUES ('Good Guy', 'Greg');
+-- insert into users_full_names (user_id, name_id) VALUES ((SELECT id from users where username = 'GoodGuyGreg'), (SELECT id from full_names where first_name = 'Good Guy' and last_name ='Greg'));
+
+create table posts (id SERIAL PRIMARY KEY, user_id int, title varchar(100), body text, FOREIGN KEY (user_id) REFERENCES users(id));
+create table comments(id SERIAL PRIMARY KEY, user_id int, comment text, post int, FOREIGN KEY (user_id) REFERENCES users(id), FOREIGN KEY (post) REFERENCES posts(id));
+
+-- create table comments(id SERIAL PRIMARY KEY, username varchar(100), comment text);
+-- create table posts_comments(id SERIAL PRIMARY KEY, post_id int REFERENCES posts(id), comment_id int REFERENCES comments(id));
 
 
 
+insert into posts (user_id, title, body) VALUES ((SELECT id from users where username = 'GoodGuyGreg'), 'Passes out at party', 'Wakes up early and cleans house');
+insert into posts (user_id, title, body) VALUES ((SELECT id from users where username = 'GoodGuyGreg'), 'Steals your identity', 'Raises your credit score');
+insert into posts (user_id, title, body) VALUES ((SELECT id from users where username = 'GoodGuyGreg'), 'Reports a bug in your code', 'Sends you a Pull Request');
+insert into posts (user_id, title, body) VALUES ((SELECT id from users where username = 'ScumbagSteve'), 'Borrows something', 'Sells it');
+insert into posts (user_id, title, body) VALUES ((SELECT id from users where username = 'ScumbagSteve'), 'Borrows everything', 'The end');
+insert into posts (user_id, title, body) VALUES ((SELECT id from users where username = 'ScumbagSteve'), 'Forks your repo on github', 'Sets it to private');
+
+insert into comments (user_id, comment, post) VALUES ((SELECT id from users where username = 'GoodGuyGreg'), 'Hope you got a good deal!', (SELECT id from posts where title = 'Borrows something'));
+insert into comments (user_id, comment, post) VALUES ((SELECT id from users where username = 'GoodGuyGreg'), 'What''s mine is yours!', (SELECT id from posts where title = 'Borrows everything'));
+insert into comments (user_id, comment, post) VALUES ((SELECT id from users where username = 'GoodGuyGreg'), 'Don''t violate the licensing agreement!', (SELECT id from posts where title = 'Forks your repo on github'));
+insert into comments (user_id, comment, post) VALUES ((SELECT id from users where username = 'ScumbagSteve'), 'It still isn''t clean', (SELECT id from posts where title = 'Passes out at party'));
+insert into comments (user_id, comment, post) VALUES ((SELECT id from users where username = 'ScumbagSteve'), 'Denied your PR cause I found a hack', (SELECT id from posts where title = 'Reports a bug in your code'));
+
+-- insert into posts_comments (post_id, comment_id) VALUES ((SELECT id from posts where title = 'Passes out at party'), (SELECT id from comments where  comment = ''));
 
 
 /* 1. */
-
+select * from users;
 /* 2. */
-
+ select * from posts;
 /* 3. */
-
+select p.*, u.username from posts p join users u on p.user_id = u.id where u.username = 'GoodGuyGreg';
 /* 4. */
-
+select p.*, u.username from posts p join users u on p.user_id = u.id where u.username = 'ScumbagSteve';
 /* 5. */
-
+select * from comments;
 /* 6. */
-
+select c.*, u.username from comments c join users u on c.user_id = u.id where username = 'GoodGuyGreg';
 /* 7. */
-
+select c.*, u.username from comments c join users u on c.user_id = u.id where username = 'ScumbagSteve';
 /* 8. */
-
-
+-- select c.* from comments c join comments_posts cp on c.id = cp.comment_id join posts p on cp.post_id = p.id where p.body = 'Reports a bug in your code';
+select c.*, u.username from comments c join users u on c.user_id = u.id join posts p on c.post = p.id where p.title = 'Reports a bug in your code';
 
 
 
