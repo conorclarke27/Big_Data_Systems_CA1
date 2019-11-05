@@ -1,26 +1,26 @@
 /* Question 2 - Inserted Documents */
-create table movies (movie_id SERIAL PRIMARY KEY, title text NOT NULL, writer varchar(100), year int);
-create table actors (actor_id SERIAL PRIMARY KEY, name varchar(100) NOT NULL);
-create table movies_actors (id SERIAL PRIMARY KEY, mov_id int REFERENCES movies(movie_id), act_id int REFERENCES actors(actor_id), UNIQUE(mov_id, act_id));
+create table movies (id SERIAL PRIMARY KEY, title text NOT NULL, writer varchar(100), year int);
+create table actors (id SERIAL PRIMARY KEY, name varchar(100) NOT NULL);
+create table movies_actors (movie_id int, actor_id int, FOREIGN KEY (movie_id) REFERENCES movies(id), FOREIGN KEY (actor_id) REFERENCES actors(id), UNIQUE (movie_id, actor_id));
 
 insert into movies (title, writer, year) VALUES ('Fight Club', 'Chuck Palahniuk', 1999);
 insert into actors (name) VALUES ('Brad Pitt');
 insert into actors (name) VALUES ('Edward Norton');
-insert into movies_actors (mov_id, act_id) VALUES ((SELECT movie_id from movies where title = 'Fight Club'), (SELECT actor_id from actors where name = 'Brad Pitt'));
-insert into movies_actors (mov_id, act_id) VALUES ((SELECT movie_id from movies where title = 'Fight Club'), (SELECT actor_id from actors where name = 'Edward Norton'));
+insert into movies_actors (movie_id, actor_id) VALUES ((SELECT id from movies where title = 'Fight Club' LIMIT 1), (SELECT id from actors where name = 'Brad Pitt' LIMIT 1));
+insert into movies_actors (movie_id, actor_id) VALUES ((SELECT id from movies where title = 'Fight Club' LIMIT 1), (SELECT id from actors where name = 'Edward Norton' LIMIT 1));
 
 insert into movies (title, writer, year) VALUES ('Pulp Fiction', 'Quentin Tarantino', 1994);
 insert into actors (name) VALUES ('John Travolta');
 insert into actors (name) VALUES ('Uma Thurman');
-insert into movies_actors (mov_id, act_id) VALUES ((SELECT movie_id from movies where title = 'Pulp Fiction'), (SELECT actor_id from actors where name = 'John Travolta'));
-insert into movies_actors (mov_id, act_id) VALUES ((SELECT movie_id from movies where title = 'Pulp Fiction'), (SELECT actor_id from actors where name = 'Uma Thurman'));
+insert into movies_actors (movie_id, actor_id) VALUES ((SELECT id from movies where title = 'Pulp Fiction' LIMIT 1), (SELECT id from actors where name = 'John Travolta' LIMIT 1));
+insert into movies_actors (movie_id, actor_id) VALUES ((SELECT id from movies where title = 'Pulp Fiction' LIMIT 1), (SELECT id from actors where name = 'Uma Thurman' LIMIT 1));
 
 insert into movies (title, writer, year) VALUES ('Inglorius Basterds', 'Quentin Tarantino', 2009);
 insert into actors (name) VALUES ('Diane Kruger');
 insert into actors (name) VALUES ('Eli Roth');
-insert into movies_actors (mov_id, act_id) VALUES ((SELECT movie_id from movies where title = 'Inglorius Basterds'), (SELECT actor_id from actors where name = 'Brad Pitt'));
-insert into movies_actors (mov_id, act_id) VALUES ((SELECT movie_id from movies where title = 'Inglorius Basterds'), (SELECT actor_id from actors where name = 'Diane Kruger'));
-insert into movies_actors (mov_id, act_id) VALUES ((SELECT movie_id from movies where title = 'Inglorius Basterds'), (SELECT actor_id from actors where name = 'Eli Roth'));
+insert into movies_actors (movie_id, actor_id) VALUES ((SELECT id from movies where title = 'Inglorius Basterds' LIMIT 1), (SELECT id from actors where name = 'Brad Pitt' LIMIT 1));
+insert into movies_actors (movie_id, actor_id) VALUES ((SELECT id from movies where title = 'Inglorius Basterds' LIMIT 1), (SELECT id from actors where name = 'Diane Kruger' LIMIT 1));
+insert into movies_actors (movie_id, actor_id) VALUES ((SELECT id from movies where title = 'Inglorius Basterds' LIMIT 1), (SELECT id from actors where name = 'Eli Roth' LIMIT 1));
 
 alter table movies add column franchise varchar(50);
 insert into movies (title, writer, year, franchise) VALUES ('The Hobbit: An Unexpected Journey', 'J.R.R. Tolkein', 2012, 'The Hobbit');
@@ -39,8 +39,7 @@ select * from movies;
 /* 2. */
 select * from movies where writer = 'Quentin Tarantino';
 /* 3. */
-select m.* from movies m join movies_actors ma on m.movie_id = ma.mov_id join actors a on ma.act_id = a.actor_id where a.name = 'Brad Pitt';
-/* THIS ONE TOOK A LONG TIME TO GET RIGHT, ABOUT 40 MINS*/
+select m.* from movies m join movies_actors ma on m.id = ma.movie_id join actors a on ma.actor_id = a.id where a.name = 'Brad Pitt';
 /* 4. */
 select * from movies where franchise = 'The Hobbit';
 /* 5. */
@@ -55,7 +54,7 @@ update movies set synopsis = 'A reluctant hobbit, Bilbo Baggins, sets out to the
 update movies set synopsis = 'The dwarves, along with Bilbo Baggins and Gandalf the Grey, continue their quest to reclaim Erebor, their homeland, from Smaug. Bilbo Baggins is in possession of a mysterious and magical ring.' where title = 'The Hobbit: The Desolation of Smaug';
 /* 3. */
 insert into actors (name) VALUES ('Samuel L. Jackson');
-insert into movies_actors (mov_id, act_id) VALUES ((SELECT movie_id from movies where title = 'Pulp Fiction'),(SELECT actor_id from actors WHERE name = 'Samuel L. Jackson'));
+insert into movies_actors (movie_id, actor_id) VALUES ((SELECT id from movies where title = 'Pulp Fiction' LIMIT 1),(SELECT id from actors WHERE name = 'Samuel L. Jackson' LIMIT 1));
 
 /* Question 5 - Text search Documents */
 /* 1. */
