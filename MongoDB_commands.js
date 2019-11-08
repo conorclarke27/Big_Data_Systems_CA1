@@ -27,7 +27,7 @@ db.movies.find({actors: "Brad Pitt"})
 // 4. get all documents with `franchise` set to "The Hobbit" 
 db.movies.find({franchise: "The Hobbit"})
 // 5. get all movies released in the 90s 
-db.movies.find({$or :[{year: {$lt: 2000}}, {year: {$gt: 1989}}]})
+db.movies.find({$all :[{year: {$lt: 2000}}, {year: {$gt: 1989}}]})
 // 6. get all movies released before the year 2000 or after 2010
 db.movies.find({$or :[{year: {$lt: 2000}}, {year: {$gt: 2010}}]})
 
