@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"bigdata_ca1_conor_clarke.comments"}],"uuid":"3ccec32d072745baae24b4314c651ab3"}
